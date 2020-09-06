@@ -2,42 +2,63 @@
 
 void Main()
 {
-	var greeting1 = new Greeting();
-	greeting1.Message = "Hi";
-	var greeting2 = new Greeting();
-	greeting2.Message = "Hello";
-	var listOfGreetings = new Greeting();
-	listOfGreetings.Add(greeting1);
-	listOfGreetings.Add(greeting2);
+	var greetings = new Greeting();
+
 	
-	foreach (Greeting item in listOfGreetings)
+	foreach (var item in greetings)
 	{
-		item.Message.Dump();
+		item.Dump();
 	}
 }
 
-public class Greeting : IEnumerable
+public class Greeting : IEnumerable<string>
 {
-	Greeting[] Items = new Greeting[100];  
-	int index = 0;  
-	public string Message {get; set;}
-	
-	public void Add(Greeting item)
+	public IEnumerator<string> GetEnumerator()
 	{
-		Items[index] = item;
-		index++;
+		return new GreetingEnumerator();
 	}
-	
-	public IEnumerator GetEnumerator()
+
+	IEnumerator IEnumerable.GetEnumerator()
 	{
-		foreach (object item in Items)
-		{
-			if (item == null)
-			{
-				break;
-			}
-			yield return item;
-		}
+		throw new NotImplementedException();
 	}
 }
-// Define other methods and classes here
+
+
+public class GreetingEnumerator : IEnumerator<string>
+{
+	private string _current = null;
+
+	public string Current => _current;
+
+	object IEnumerator.Current => throw new NotImplementedException();
+
+	public void Dispose()
+	{
+		throw new NotImplementedException();
+	}
+
+	public bool MoveNext()
+	{
+		if(_current == null)
+		{
+			_current = "Hi";
+			return true;
+		}
+		if (_current == "Hi")
+		{
+			_current = "Hello";
+			return true;
+		}
+		if (_current == "Hello")
+		{
+			return false;
+		}
+		throw new InvalidOperationException("Invalid");
+	}
+
+	public void Reset()
+	{
+		throw new NotImplementedException();
+	}
+}
